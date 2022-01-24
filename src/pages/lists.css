@@ -1,0 +1,11 @@
+.results h3{
+    text-align: left;
+}
+
+.search_bar-ingredient{
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    line-height: 8px;
+}

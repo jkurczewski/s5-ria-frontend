@@ -1,20 +1,19 @@
 import React from 'react'
-import { Container, Form } from 'react-bootstrap';
+import { Form, Col, Row, Button } from 'react-bootstrap';
+import axios from 'axios';
 
-const SearchBar = () => {
-    return(
-        <Container fluid>
-            <Form>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
-                    <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                    </Form.Text>
-                </Form.Group>
-            </Form>
-        </Container>
+const api = axios.create({
+    baseURL: `http://localhost:8000/api/ingredients`,
+  });
+
+
+export default function SearchBar(props) {
+
+    console.log(props)
+
+    return (
+        <>
+            
+        </>
     );
-};
-
-export default SearchBar;
+}
