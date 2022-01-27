@@ -34,7 +34,6 @@ function ListDrinks() {
 
   useEffect(() => {
     if (search === null) {
-      console.log(search);
       async function getElems() {
         try {
           const res = await api.get("/drinks");
