@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Col, Row } from 'react-bootstrap';
-import Select from 'react-select';
+import { Form, Button, Col, Table } from 'react-bootstrap';
 import axios from 'axios';
 
 const api = axios.create({
@@ -8,11 +7,20 @@ const api = axios.create({
 });
 
 export default function DrinksForm() {
-  const [newDrink, setNewDrink] = useState(null);
+  const [newDrink, setNewDrink] = useState([]);
   const [ingredients, setIngredients] = useState(null);
-  const [selectedAlcohols, setSelectedAlcohols] = useState([]);
-  const [selectedAdditions, setSelectedAdditions] = useState([]);
-  const [selectedBeverages, setSelectedBeverages] = useState([]);
+
+  const [alcohols, setAlcohols] = useState([
+    { alcohol_name: '', alcohol_amount: '', alcohol_unit: 'ml' },
+  ]);
+  const [beverages, setBeverages] = useState([
+    { beverage_name: '', beverage_amount: '', beverage_unit: 'ml' },
+  ]);
+  const [additions, setAdditions] = useState([
+    { addition_name: '', addition_amount: '', addition_unit: 'piece' },
+  ]);
+
+  const [formerrors, setFormErrors] = useState({});
 
   const alcoholsList = [];
   const beveragesList = [];
@@ -44,8 +52,8 @@ export default function DrinksForm() {
   useEffect(() => {
     async function getElems() {
       try {
-        const ingredients = await api.get('/ingredients');
-        setIngredients(ingredients.data);
+        const res = await api.get('/ingredients');
+        setIngredients(res.data);
       } catch (err) {
         console.log(err);
       }
@@ -53,8 +61,153 @@ export default function DrinksForm() {
     getElems();
   }, []);
 
-  function handleSubmit(e) {
+  const handleInput = (e) => {
+    if (e.target.type === 'file') {
+      setNewDrink(() => ({
+        ...newDrink,
+        [e.target.name]: e.target.files[0],
+      }));
+    } else {
+      setNewDrink(() => ({
+        ...newDrink,
+        [e.target.name]: e.target.value,
+      }));
+    }
+  };
+
+  const handleElemChange = (i, e, type) => {
+    const newAlcohol = [...alcohols];
+    const newBeverage = [...beverages];
+    const newAddition = [...additions];
+
+    switch (type) {
+      case 'alcohol':
+        newAlcohol[i][e.target.name] = e.target.value;
+        setAlcohols(newAlcohol);
+        break;
+      case 'beverage':
+        newBeverage[i][e.target.name] = e.target.value;
+        setBeverages(newBeverage);
+        break;
+      case 'addition':
+        newAddition[i][e.target.name] = e.target.value;
+        setAdditions(newAddition);
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const addElem = (type) => {
+    switch (type) {
+      case 'alcohol':
+        setAlcohols([...alcohols, { alcohol_name: '', alcohol_amount: '', alcohol_unit: 'ml' }]);
+        break;
+      case 'beverage':
+        setBeverages([
+          ...beverages,
+          { beverage_name: '', beverage_amount: '', beverage_unit: 'ml' },
+        ]);
+        break;
+      case 'addition':
+        setAdditions([
+          ...additions,
+          { addition_name: '', addition_amount: '', addition_unit: 'piece' },
+        ]);
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const removeElem = (i, type) => {
+    const newAlcoholRemove = [...alcohols];
+    const newBeverageRemove = [...beverages];
+    const newAdditionRemove = [...additions];
+
+    switch (type) {
+      case 'alcohol':
+        newAlcoholRemove.splice(i, 1);
+        setAlcohols(newAlcoholRemove);
+        break;
+      case 'beverage':
+        newBeverageRemove.splice(i, 1);
+        setBeverages(newBeverageRemove);
+        break;
+      case 'addition':
+        newAdditionRemove.splice(i, 1);
+        setAdditions(newAdditionRemove);
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const validate = () => {
+    const errors = {};
+
+    if (!newDrink.name) {
+      errors.name = 'Nazwa jest wymagana';
+    }
+
+    if (!newDrink.description) {
+      errors.description = 'Opis jest wymagany';
+    }
+
+    if (!newDrink.recipe) {
+      errors.recipe = 'Opis jest wymagany';
+    }
+
+    // if (!selectedBeverages) {
+    //   errors.beverages = 'Napoje są wymagane';
+    // }
+
+    // if (!selectedAdditions) {
+    //   errors.addiitons = 'Dodatki są wymagane';
+    // }
+
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length === 0) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+    validate(newDrink);
+
+    let alcoholsUrl = 'alcohols=';
+    let beveragesUrl = 'beverages=';
+    let additionsUrl = 'additions=';
+
+    alcohols.map(
+      (elem) =>
+        (alcoholsUrl = alcoholsUrl.concat(
+          `${elem.alcohol_name}-${elem.alcohol_unit}-${elem.alcohol_amount},`,
+        )),
+    );
+
+    beverages.map(
+      (elem) =>
+        (beveragesUrl = beveragesUrl.concat(
+          `${elem.beverage_name}-${elem.beverage_unit}-${elem.beverage_amount},`,
+        )),
+    );
+
+    additions.map(
+      (elem) =>
+        (additionsUrl = additionsUrl.concat(
+          `${elem.addition_name}-${elem.addition_unit}-${elem.addition_amount},`,
+        )),
+    );
+
+    console.log(alcoholsUrl);
 
     // api
     //   .post('/drinks', {
@@ -68,140 +221,274 @@ export default function DrinksForm() {
     //   .then((response) => {
     //     setNewDrink(response.data);
     //   });
-  }
+  };
 
   return (
     <Form onSubmit={(event) => handleSubmit(event)}>
       <Form.Group className="mb-3">
-        <Form.Label>Nazwa</Form.Label>
-        <Form.Control name="name" type="text" />
+        <Form.Label>
+          Nazwa <span className="text-danger">*</span>
+        </Form.Label>
+        <Form.Control
+          onChange={(e) => handleInput(e)}
+          required
+          name="name"
+          type="text"
+          value="test"
+        />
+        {formerrors.name && <p className="text-danger">{formerrors.name}</p>}
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Label>Opis</Form.Label>
-        <Form.Control name="description" as="textarea" rows={3} />
+        <Form.Label>
+          Opis <span className="text-danger">*</span>
+        </Form.Label>
+        <Form.Control
+          onChange={(e) => handleInput(e)}
+          required
+          name="description"
+          as="textarea"
+          rows={3}
+          value="test"
+        />
+        {formerrors.description && <p className="text-danger">{formerrors.description}</p>}
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Label>Przepis</Form.Label>
-        <Form.Control name="recipe" as="textarea" rows={3} />
+        <Form.Label>
+          Przepis <span className="text-danger">*</span>
+        </Form.Label>
+        <Form.Control
+          onChange={(e) => handleInput(e)}
+          required
+          name="recipe"
+          as="textarea"
+          rows={3}
+          value="test"
+        />
+        {formerrors.recipe && <p className="text-danger">{formerrors.recipe}</p>}
       </Form.Group>
 
       <Form.Group controlId="formFile" className="mb-3">
-        <Form.Label>Zdjęcie</Form.Label>
-        <Form.Control type="file" />
+        <Form.Label>
+          Zdjęcie <span className="text-danger">*</span>
+        </Form.Label>
+        <Form.Control onChange={(e) => handleInput(e)} required name="image_url" type="file" />
+        {formerrors.image_url && <p className="text-danger">{formerrors.image_url}</p>}
       </Form.Group>
 
       <hr />
-      <h5>Składniki: </h5>
+      <h4>Składniki: </h4>
+      <h5 className="mt-4">Alkohole:</h5>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Nazwa alkoholu</th>
+            <th>Ilość</th>
+            <th>Jednostka</th>
+          </tr>
+        </thead>
+        <tbody>
+          {alcohols.map((element, index) => (
+            <tr key={element}>
+              <td className="w-50">
+                <Form.Group>
+                  <Form.Select
+                    name="alcohol_name"
+                    onChange={(e) => handleElemChange(index, e, 'alcohol')}
+                    required
+                    defaultValue="default"
+                  >
+                    <option disabled key="default" value="default">
+                      Wybierz alkohol
+                    </option>
+                    {alcoholsList.map((e) => (
+                      <option value={e.value}>{e.label}</option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </td>
+              <td>
+                <Form.Group>
+                  <Form.Control
+                    onChange={(e) => handleElemChange(index, e, 'alcohol')}
+                    onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()}
+                    name="alcohol_amount"
+                    type="text"
+                    required
+                  />
+                </Form.Group>
+              </td>
+              <td>
+                <Form.Group>
+                  <Form.Select
+                    onChange={(e) => handleElemChange(index, e, 'alcohol')}
+                    name="alcohol_unit"
+                    defaultValue="ml"
+                  >
+                    <option key="ml" value="ml">
+                      ml
+                    </option>
+                    <option key="l" value="l">
+                      l
+                    </option>
+                  </Form.Select>
+                </Form.Group>
+              </td>
+              <td>
+                <Button variant="secondary" size="sm" onClick={() => removeElem(index, 'alcohol')}>
+                  Usuń
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+      <Button variant="secondary" size="sm" onClick={() => addElem('alcohol')}>
+        Dodaj nowy alkohol
+      </Button>
 
-      <Form.Group>
-        <Form.Label>Alkohole</Form.Label>
-        <Select
-          className="mb-3"
-          options={alcoholsList}
-          isMulti="true"
-          onChange={setSelectedAlcohols}
-        />
-      </Form.Group>
+      <h5 className="mt-4">Napoje:</h5>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Nazwa napoju</th>
+            <th>Ilość</th>
+            <th>Jednostka</th>
+          </tr>
+        </thead>
+        <tbody>
+          {beverages.map((element, index) => (
+            <tr key={element}>
+              <td className="w-50">
+                <Form.Group>
+                  <Form.Select
+                    name="beverage_name"
+                    onChange={(e) => handleElemChange(index, e, 'beverage')}
+                    required
+                    defaultValue="default"
+                  >
+                    <option disabled key="default" value="default">
+                      Wybierz napój
+                    </option>
+                    {beveragesList.map((e) => (
+                      <option value={e.value}>{e.label}</option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </td>
+              <td>
+                <Form.Group>
+                  <Form.Control
+                    onChange={(e) => handleElemChange(index, e, 'beverage')}
+                    onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()}
+                    name="beverage_amount"
+                    type="text"
+                    required
+                  />
+                </Form.Group>
+              </td>
+              <td>
+                <Form.Group>
+                  <Form.Select
+                    onChange={(e) => handleElemChange(index, e, 'beverage')}
+                    name="beverage_unit"
+                    defaultValue="ml"
+                  >
+                    <option key="ml" value="ml">
+                      ml
+                    </option>
+                    <option key="l" value="l">
+                      l
+                    </option>
+                  </Form.Select>
+                </Form.Group>
+              </td>
+              <td>
+                <Button variant="secondary" size="sm" onClick={() => removeElem(index, 'beverage')}>
+                  Usuń
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+      <Button variant="secondary" size="sm" onClick={() => addElem('beverage')}>
+        Dodaj nowy napój
+      </Button>
 
-      {selectedAlcohols.map((elem) => (
-        <Row className="mb-1 d-flex align-items-center">
-          <Col md="5">
-            <h6>{elem.label}</h6>
-          </Col>
-          <Col>
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Control name="name" type="text" />
-            </Form.Group>
-          </Col>
-          <Col md="3">
-            <Form.Group>
-              <Form.Select name="unit_type">
-                <option key="ml" value="ml">
-                  Mililitry
-                </option>
-                <option key="l" value="l">
-                  Litry
-                </option>
-              </Form.Select>
-            </Form.Group>
-          </Col>
-        </Row>
-      ))}
-
-      <Form.Group>
-        <Form.Label>Napoje</Form.Label>
-        <Select
-          className="mb-3"
-          options={beveragesList}
-          name="beverages"
-          isMulti="true"
-          onChange={setSelectedBeverages}
-        />
-      </Form.Group>
-
-      {selectedBeverages.map((elem) => (
-        <Row className="mb-1 d-flex align-items-center">
-          <Col md="5">
-            <h6>{elem.label}</h6>
-          </Col>
-          <Col>
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Control name="name" type="text" />
-            </Form.Group>
-          </Col>
-          <Col md="3">
-            <Form.Group>
-              <Form.Select name="unit_type">
-                <option key="ml" value="ml">
-                  Mililitry
-                </option>
-                <option key="l" value="l">
-                  Litry
-                </option>
-              </Form.Select>
-            </Form.Group>
-          </Col>
-        </Row>
-      ))}
-
-      <Form.Group>
-        <Form.Label>Dodatki</Form.Label>
-        <Select
-          className="mb-3"
-          options={additionsList}
-          name="additions"
-          isMulti="true"
-          onChange={setSelectedAdditions}
-        />
-      </Form.Group>
-
-      {selectedAdditions.map((elem) => (
-        <Row className="mb-1 d-flex align-items-center">
-          <Col md="5">
-            <h6>{elem.label}</h6>
-          </Col>
-          <Col>
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Control name="name" type="text" />
-            </Form.Group>
-          </Col>
-          <Col md="3">
-            <Form.Group>
-              <Form.Select name="unit_type">
-                <option key="piece" value="piece">
-                  Sztuka/i
-                </option>
-              </Form.Select>
-            </Form.Group>
-          </Col>
-        </Row>
-      ))}
+      <h5 className="mt-4">Dodatki:</h5>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Nazwa dodatku</th>
+            <th>Ilość</th>
+            <th>Jednostka</th>
+          </tr>
+        </thead>
+        <tbody>
+          {additions.map((element, index) => (
+            <tr key={element}>
+              <td className="w-50">
+                <Form.Group>
+                  <Form.Select
+                    name="aaddition_name"
+                    onChange={(e) => handleElemChange(index, e, 'aaddition')}
+                    required
+                    defaultValue="default"
+                  >
+                    <option disabled key="default" value="default">
+                      Wybierz dodatek
+                    </option>
+                    {additionsList.map((e) => (
+                      <option value={e.value}>{e.label}</option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </td>
+              <td>
+                <Form.Group>
+                  <Form.Control
+                    onChange={(e) => handleElemChange(index, e, 'addition')}
+                    onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()}
+                    name="addition_amount"
+                    type="text"
+                    required
+                  />
+                </Form.Group>
+              </td>
+              <td>
+                <Form.Group>
+                  <Form.Select
+                    onChange={(e) => handleElemChange(index, e, 'addition')}
+                    name="addition_unit"
+                    defaultValue="ml"
+                  >
+                    <option key="ml" value="ml">
+                      ml
+                    </option>
+                    <option key="l" value="l">
+                      l
+                    </option>
+                  </Form.Select>
+                </Form.Group>
+              </td>
+              <td>
+                <Button variant="secondary" size="sm" onClick={() => removeElem(index, 'addition')}>
+                  Usuń
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+      <Button variant="secondary" size="sm" onClick={() => addElem('addition')}>
+        Dodaj nowy dodatek
+      </Button>
 
       <Col className="d-flex justify-content-end">
         <Button className="mt-4" variant="primary" type="submit">
-          Zatwierdź i dodaj
+          Dodaj
         </Button>
       </Col>
     </Form>
