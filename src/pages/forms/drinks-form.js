@@ -178,13 +178,16 @@ export default function DrinksForm() {
     return false;
   };
 
+  console.log(additions);
+
   const handleSubmit = (e) => {
+    console.log(newDrink);
     e.preventDefault();
     validate(newDrink);
 
-    let alcoholsUrl = 'alcohols=';
-    let beveragesUrl = 'beverages=';
-    let additionsUrl = 'additions=';
+    let alcoholsUrl = '';
+    let beveragesUrl = '&beverages=';
+    let additionsUrl = '&additions=';
 
     alcohols.map(
       (elem) =>
@@ -193,12 +196,20 @@ export default function DrinksForm() {
         )),
     );
 
+    if (alcoholsUrl.substring(alcoholsUrl.length - 1) === ',') {
+      alcoholsUrl = alcoholsUrl.substring(0, alcoholsUrl.length - 1);
+    }
+
     beverages.map(
       (elem) =>
         (beveragesUrl = beveragesUrl.concat(
           `${elem.beverage_name}-${elem.beverage_unit}-${elem.beverage_amount},`,
         )),
     );
+
+    if (beveragesUrl.substring(beveragesUrl.length - 1) === ',') {
+      beveragesUrl = beveragesUrl.substring(0, beveragesUrl.length - 1);
+    }
 
     additions.map(
       (elem) =>
@@ -207,20 +218,29 @@ export default function DrinksForm() {
         )),
     );
 
-    console.log(alcoholsUrl);
+    if (additionsUrl.substring(additionsUrl.length - 1) === ',') {
+      additionsUrl = additionsUrl.substring(0, additionsUrl.length - 1);
+    }
 
-    // api
-    //   .post('/drinks', {
-    //     name: e.target.name.value,
-    //     description: e.target.description.value,
-    //     recipe: e.target.description.value,
-    //     alcohols: e.target.description.value,
-    //     beverages: e.target.description.value,
-    //     additions: e.target.description.value,
-    //   })
-    //   .then((response) => {
-    //     setNewDrink(response.data);
-    //   });
+    const formData = new FormData();
+    formData.append('image', newDrink.image_url, newDrink.image_url.name);
+
+    let url = `drinks?name=${newDrink.name}&description=${newDrink.description}&recipe=${newDrink.recipe}`;
+
+    if (alcoholsUrl) {
+      url += `${url}&alcohols=${alcoholsUrl}`;
+    }
+
+    api
+      .post(url, formData, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -229,13 +249,7 @@ export default function DrinksForm() {
         <Form.Label>
           Nazwa <span className="text-danger">*</span>
         </Form.Label>
-        <Form.Control
-          onChange={(e) => handleInput(e)}
-          required
-          name="name"
-          type="text"
-          value="test"
-        />
+        <Form.Control onChange={(e) => handleInput(e)} required name="name" type="text" />
         {formerrors.name && <p className="text-danger">{formerrors.name}</p>}
       </Form.Group>
 
@@ -249,7 +263,6 @@ export default function DrinksForm() {
           name="description"
           as="textarea"
           rows={3}
-          value="test"
         />
         {formerrors.description && <p className="text-danger">{formerrors.description}</p>}
       </Form.Group>
@@ -264,7 +277,6 @@ export default function DrinksForm() {
           name="recipe"
           as="textarea"
           rows={3}
-          value="test"
         />
         {formerrors.recipe && <p className="text-danger">{formerrors.recipe}</p>}
       </Form.Group>
@@ -433,7 +445,7 @@ export default function DrinksForm() {
                 <Form.Group>
                   <Form.Select
                     name="aaddition_name"
-                    onChange={(e) => handleElemChange(index, e, 'aaddition')}
+                    onChange={(e) => handleElemChange(index, e, 'addition')}
                     required
                     defaultValue="default"
                   >
