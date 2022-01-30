@@ -33,7 +33,7 @@ export default function AdditionForm({
     alcoholsPropTemp.map((obj) =>
       alcoholsProp.push({
         alcohol_id: obj.alcohol_id,
-        alcohol_name: obj.alcohol_name,
+        alcohol_name: obj.alcohol_id,
         alcohol_amount: obj.alcohol_amount,
         alcohol_unit: obj.alcohol_unit,
       }),
@@ -42,7 +42,7 @@ export default function AdditionForm({
     beveragesPropTemp.map((obj) =>
       beveragesProp.push({
         beverage_id: obj.beverage_id,
-        beverage_name: obj.beverage_name,
+        beverage_name: obj.beverage_id,
         beverage_amount: obj.beverage_amount,
         beverage_unit: obj.beverage_unit,
       }),
@@ -51,7 +51,7 @@ export default function AdditionForm({
     additionsPropTemp.map((obj) =>
       additionsProp.push({
         addition_id: obj.addition_id,
-        addition_name: obj.addition_name,
+        addition_name: obj.addition_id,
         addition_amount: obj.addition_amount,
         addition_unit: obj.addition_unit,
       }),
@@ -154,9 +154,7 @@ export default function AdditionForm({
 
     switch (type) {
       case 'alcohol':
-        newAlcohol[i][e.target.id] = e.target.id;
         newAlcohol[i][e.target.name] = e.target.value;
-        console.log(newAlcohol);
         setAlcohols(newAlcohol);
         break;
       case 'beverage':
@@ -164,7 +162,7 @@ export default function AdditionForm({
         setBeverages(newBeverage);
         break;
       case 'addition':
-        newDrink[i][e.target.name] = e.target.value;
+        newAddition[i][e.target.name] = e.target.value;
         setAdditions(newAddition);
         break;
 
@@ -341,6 +339,7 @@ export default function AdditionForm({
       }
 
       const formData = new FormData();
+
       if (newDrink.image_url) {
         formData.append('image_url', newDrink.image_url, newDrink.image_url.name);
       }
@@ -352,6 +351,8 @@ export default function AdditionForm({
         if (alcoholsUrl) {
           url = url.concat(`&alcohols=${alcoholsUrl}`);
         }
+
+        console.log(url);
 
         api
           .patch(url, formData, {
@@ -389,7 +390,7 @@ export default function AdditionForm({
     }
   };
 
-  console.log(alcohols[0].alcohol_id);
+  console.log(alcohols);
 
   return (
     <Form onSubmit={(event) => handleSubmit(event)}>
@@ -462,7 +463,9 @@ export default function AdditionForm({
                     name="alcohol_name"
                     onChange={(e) => handleElemChange(index, e, 'alcohol')}
                     required={!isProp}
-                    value={alcohols[index].alcohol_id}
+                    value={
+                      alcohols[index].alcohol_name === '' ? 'default' : alcohols[index].alcohol_name
+                    }
                   >
                     <option disabled key="default" value="default">
                       Wybierz alkohol
@@ -535,7 +538,11 @@ export default function AdditionForm({
                     name="beverage_name"
                     onChange={(e) => handleElemChange(index, e, 'beverage')}
                     required={!isProp}
-                    defaultValue={isProp ? element.beverage_id : 'default'}
+                    value={
+                      beverages[index].beverage_name === ''
+                        ? 'default'
+                        : beverages[index].beverage_name
+                    }
                   >
                     <option disabled key="default" value="default">
                       Wybierz napój
@@ -608,7 +615,11 @@ export default function AdditionForm({
                     name="addition_name"
                     onChange={(e) => handleElemChange(index, e, 'addition')}
                     required={!isProp}
-                    value={isProp ? element.addition_id : 'default'}
+                    value={
+                      additions[index].addition_name === ''
+                        ? 'default'
+                        : additions[index].addition_name
+                    }
                   >
                     <option disabled key="default" value="default">
                       Wybierz dodatek
@@ -621,6 +632,7 @@ export default function AdditionForm({
                   </Form.Select>
                 </Form.Group>
               </td>
+
               <td>
                 <Form.Group>
                   <Form.Control
@@ -660,34 +672,74 @@ export default function AdditionForm({
         Dodaj nowy dodatek
       </Button>
 
-      <Col className="d-flex justify-content-end">
-        <Button className="mt-4" variant="primary" type="submit">
-          Dodaj
-        </Button>
-      </Col>
-
-      <Modal show={modalShow} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">Drink został dodany</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h4>{modalData ? modalData[1].name : ''}</h4>
-          <p>Drink został dodany do listy. Możesz dodać kolejny lub przejść do nowo dodanego.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => navigate('/drinks')}>
-            Powrót do listy
-          </Button>
-          <Button
-            onClick={() => {
-              setModalShow(false);
-              reload();
-            }}
+      {isProp ? (
+        <>
+          <Col className="d-flex justify-content-end">
+            <Button className="mt-4" variant="primary" type="submit">
+              Zatwierdź
+            </Button>
+          </Col>
+          <Modal
+            show={addedModalShow}
+            size="md"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            backdrop="static"
           >
-            Dodaj nowy
-          </Button>
-        </Modal.Footer>
-      </Modal>
+            <Modal.Header>
+              <Modal.Title>Edycja zakończona poprawnie</Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+              <p>{newDrink.name} - został zaktualizowany</p>
+            </Modal.Body>
+
+            <Modal.Footer>
+              <Button variant="primary" onClick={() => reload()}>
+                Powrót
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </>
+      ) : (
+        <>
+          <Col className="d-flex justify-content-end">
+            <Button className="mt-4" variant="primary" type="submit">
+              Dodaj
+            </Button>
+          </Col>
+          <Modal
+            show={modalShow}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            backdrop="static"
+          >
+            <Modal.Header>
+              <Modal.Title id="contained-modal-title-vcenter">Dodatek został dodany</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <h4>{modalData ? modalData[1].name : ''}</h4>
+              <p>
+                Dodatek został dodany do listy. Możesz dodać kolejny lub przejść do nowo dodanego.
+              </p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => navigate('/drinks')}>
+                Powrót do listy
+              </Button>
+              <Button
+                onClick={() => {
+                  setModalShow(false);
+                  reload();
+                }}
+              >
+                Dodaj nowy
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </>
+      )}
     </Form>
   );
 }
