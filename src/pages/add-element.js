@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 import DrinksForm from './forms/drinks-form';
+import AlcoholsForm from './forms/alcohol-form';
+import BeveragesForm from './forms/beverage-form';
+import AdditionsForm from './forms/addition-form';
 
 export default function AddElement() {
   const [state, setState] = useState('drinks');
   const [form, setForm] = useState('');
-
-  // const AlcoholsForm = () => {
-  //   return <span>AlcoholsForm</span>;
-  // };
-
-  // const BeveresForm = () => {
-  //   return <span>BeveresForm</span>;
-  // };
-
-  // const AdditionsForm = () => {
-  //   return <span>AdditionsForm</span>;
-  // };
 
   useEffect(() => {
     const RenderType = () => {
@@ -25,17 +16,17 @@ export default function AddElement() {
           setForm(<DrinksForm />);
           break;
 
-        // case 'alcohols':
-        //   setForm(<AlcoholsForm />);
-        //   break;
+        case 'alcohols':
+          setForm(<AlcoholsForm />);
+          break;
 
-        // case 'beverages':
-        //   setForm(<BeveresForm />);
-        //   break;
+        case 'beverages':
+          setForm(<BeveragesForm />);
+          break;
 
-        // case 'additions':
-        //   setForm(<AdditionsForm />);
-        //   break;
+        case 'additions':
+          setForm(<AdditionsForm />);
+          break;
 
         default:
       }

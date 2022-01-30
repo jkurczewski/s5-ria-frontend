@@ -1,22 +1,23 @@
-import React from "react";
-import { Container, ProgressBar, Row, Col, Image, Button } from "react-bootstrap";
-import axios from "axios";
-import { useParams, Link, useNavigate, Route } from "react-router-dom";
-
+import React, { useState, useEffect } from 'react';
+import { Container, ProgressBar, Row, Col, Image, Button, Modal } from 'react-bootstrap';
+import axios from 'axios';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import DrinkForm from './forms/drinks-form';
 
 const api = axios.create({
   baseURL: `http://localhost:8000/api/drinks/`,
 });
 
 function SingleDrink() {
-  const [elem, setElem] = React.useState(null);
+  const [elem, setElem] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
+  const [modalShow, setModalShow] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function getElem() {
       try {
-        const res = await api.get("/" + id);
+        const res = await api.get(`/${id}`);
         setElem(res.data);
       } catch (err) {
         console.log(err);
@@ -27,21 +28,17 @@ function SingleDrink() {
 
   async function deleteElem() {
     try {
-        await api.delete("/" + id);
-        alert(elem[0].name + " został usunięty!");
-        setElem(null);
-        navigate("/drinks");
-
+      await api.delete(`/${id}`);
+      alert(`${elem[0].name}został usunięty!`);
+      setElem(null);
+      navigate('/drinks');
     } catch (error) {
-        alert("Podczas usuwania wystąpił błąd");
-        console.log(error)
+      alert('Podczas usuwania wystąpił błąd');
+      console.log(error);
     }
-    
-
   }
 
-
-  function getAlcohols(elem) {
+  function getAlcohols() {
     if (Object.keys(elem.ingredients.alcohols).length > 0) {
       const alcohols = elem.ingredients.alcohols;
 
@@ -52,7 +49,11 @@ function SingleDrink() {
             {alcohols.map(function (obj) {
               return (
                 <li key={obj.id}>
-                <Link as={Link} to={ '/alcohols/'+ obj.alcohol_id }>{obj.alcohol_name}</Link> - {obj.alcohol_amount}{obj.alcohol_unit}
+                  <Link as={Link} to={`/alcohols/'${obj.alcohol_id}`}>
+                    {obj.alcohol_name}
+                  </Link>{' '}
+                  - {obj.alcohol_amount}
+                  {obj.alcohol_unit}
                 </li>
               );
             })}
@@ -60,9 +61,14 @@ function SingleDrink() {
         </div>
       );
     }
+    return (
+      <div>
+        <h4>Alkohole</h4>
+      </div>
+    );
   }
 
-  function getBeverages(elem) {
+  function getBeverages() {
     if (Object.keys(elem.ingredients.beverages).length > 0) {
       const beverages = elem.ingredients.beverages;
 
@@ -73,7 +79,11 @@ function SingleDrink() {
             {beverages.map(function (obj) {
               return (
                 <li key={obj.id}>
-                <Link as={Link} to={ '/beverages/'+ obj.beverage_id }>{obj.beverage_name}</Link> - {obj.beverage_amount}{obj.beverage_unit}
+                  <Link as={Link} to={`/beverages/'${obj.beverage_id}`}>
+                    {obj.beverage_name}
+                  </Link>{' '}
+                  - {obj.beverage_amount}
+                  {obj.beverage_unit}
                 </li>
               );
             })}
@@ -83,7 +93,7 @@ function SingleDrink() {
     }
   }
 
-  function getAdditions(elem) {
+  function getAdditions() {
     if (Object.keys(elem.ingredients.additions).length > 0) {
       const additions = elem.ingredients.additions;
 
@@ -93,9 +103,11 @@ function SingleDrink() {
           <ul>
             {additions.map(function (obj) {
               return (
-                
                 <li key={obj.id}>
-                <Link as={Link} to={ '/additions/'+ obj.addition_id }>{obj.addition_name}</Link> - {obj.addition_amount} {obj.addition_unit}
+                  <Link as={Link} to={`/additions/'${obj.addition_id}`}>
+                    {obj.addition_name}
+                  </Link>{' '}
+                  - {obj.addition_amount} {obj.addition_unit}
                 </li>
               );
             })}
@@ -116,23 +128,27 @@ function SingleDrink() {
     <Container className="my-5">
       <Row>
         <Col>
-          <Link className="btn btn-outline-dark" as={Link} to={"/drinks"}>
+          <Link className="btn btn-outline-dark" as={Link} to="/drinks">
             Powrót do listy drinków
           </Link>
         </Col>
         <Col className="d-flex justify-content-end">
-            <Button className="btn btn-Info mx-3" >Edytuj</Button>
-            <Button className="btn btn-danger" onClick={deleteElem}>Usuń</Button>
+          <Button className="btn btn-Info mx-3" onClick={() => setModalShow(true)}>
+            Edytuj
+          </Button>
+          <Button className="btn btn-danger" onClick={() => deleteElem()}>
+            Usuń
+          </Button>
         </Col>
       </Row>
       <Row className="my-4">
         <Col xs="3">
           <Image
             src={elem[0].image_url}
-            fluid={true}
+            fluid="true"
             onError={(e) => {
               e.target.onError = null;
-              e.target.src = "../320.png";
+              e.target.src = '../320.png';
             }}
           />
         </Col>
@@ -154,6 +170,29 @@ function SingleDrink() {
           <p>{elem[0].recipe}</p>
         </Col>
       </Row>
+      <Modal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">Edycja drinka</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <DrinkForm
+            isProp="true"
+            drinkId={elem[0].id}
+            drinkName={elem[0].name}
+            drinkDescription={elem[0].description}
+            drinkRecipe={elem[0].recipe}
+            alcoholsPropTemp={elem.ingredients.alcohols}
+            beveragesPropTemp={elem.ingredients.beverages}
+            additionsPropTemp={elem.ingredients.additions}
+          />
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 }
