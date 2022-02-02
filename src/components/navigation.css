@@ -1,0 +1,14 @@
+.navigation_wrapper {
+  background-color: #ba181b;
+}
+.navigation_wrapper h1 {
+  color: white;
+}
+
+.navigation span {
+  color: #ffffff;
+}
+
+.navbar {
+  padding: 0.3rem !important;
+}

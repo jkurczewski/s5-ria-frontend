@@ -25,8 +25,6 @@ export default function BeverageForm({ isProp, beverageId, beverageName, beverag
     window.location.reload();
   };
 
-  console.log(newBeverage);
-
   const handleInput = (e) => {
     if (e.target.type === 'file') {
       setnewBeverage(() => ({
@@ -142,7 +140,9 @@ export default function BeverageForm({ isProp, beverageId, beverageName, beverag
   return (
     <Form onSubmit={(event) => handleSubmit(event)}>
       <Form.Group className="mb-3">
-        <Form.Label>Nazwa {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Nazwa {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -154,7 +154,9 @@ export default function BeverageForm({ isProp, beverageId, beverageName, beverag
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Smak {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Smak {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -168,7 +170,9 @@ export default function BeverageForm({ isProp, beverageId, beverageName, beverag
       </Form.Group>
 
       <Form.Group controlId="formFile" className="mb-3">
-        <Form.Label>Zdjęcie {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Zdjęcie {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -184,7 +188,7 @@ export default function BeverageForm({ isProp, beverageId, beverageName, beverag
       {isProp ? (
         <>
           <Col className="d-flex justify-content-end">
-            <Button className="mt-4" variant="primary" type="submit">
+            <Button className="mt-4" variant="danger" type="submit">
               Zatwierdź
             </Button>
           </Col>
@@ -204,7 +208,7 @@ export default function BeverageForm({ isProp, beverageId, beverageName, beverag
             </Modal.Body>
 
             <Modal.Footer>
-              <Button variant="primary" onClick={() => reload()}>
+              <Button variant="danger" onClick={() => reload()}>
                 Powrót
               </Button>
             </Modal.Footer>
@@ -213,7 +217,7 @@ export default function BeverageForm({ isProp, beverageId, beverageName, beverag
       ) : (
         <>
           <Col className="d-flex justify-content-end">
-            <Button className="mt-4" variant="primary" type="submit">
+            <Button className="mt-4" variant="danger" type="submit">
               Dodaj
             </Button>
           </Col>

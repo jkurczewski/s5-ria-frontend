@@ -16,6 +16,8 @@
     "prefer-destructuring": ["off"],
     "prefer-arrow-callback": ["off"],
     "consistent-return": ["off"],
-    "no-unused-vars": ["off"]
+    "no-unused-vars": ["off"],
+    "react/destructuring-assignment": ["off"],
+    "prefer-template": ["off"]
   }
 }

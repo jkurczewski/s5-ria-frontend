@@ -1,7 +1,7 @@
-#footer{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 48px;
-    margin-top: 64px;
+#footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  margin-top: 128px;
 }

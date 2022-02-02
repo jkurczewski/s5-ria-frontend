@@ -3,6 +3,8 @@ import { Container, ProgressBar, Row, Col, Image, Button, Card, Modal } from 're
 import axios from 'axios';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import AlcoholForm from './forms/alcohol-form';
+import './single.css';
+import './lists.css';
 
 const api = axios.create({
   baseURL: `http://localhost:8000/api/alcohols/`,
@@ -38,88 +40,106 @@ function SingleAlcohol() {
     }
   }
 
-  if (!elem)
+  if (!elem) {
     return (
       <Container className="my-4">
-        <ProgressBar animated now={100} />
+        <ProgressBar variant="bg-danger" animated now={100} />
       </Container>
     );
+  }
+
+  console.log(elem);
 
   return (
-    <Container className="my-5">
-      <Row>
-        <Col>
-          <Link className="btn btn-outline-dark" as={Link} to="/alcohols">
-            Powrót do listy
-          </Link>
-        </Col>
-        <Col className="d-flex justify-content-end">
-          <Button className="btn btn-Info mx-3" onClick={() => setModalShow(true)}>
-            Edytuj
-          </Button>
-          <Button className="btn btn-danger" onClick={() => deleteElem()}>
-            Usuń
-          </Button>
-        </Col>
-      </Row>
-      <Row className="my-4">
-        <Col xs="3">
-          <Image
-            src={elem[0].alcohol_image_url}
-            fluid="true"
-            onError={(e) => {
-              e.target.onError = null;
-              e.target.src = '../320.png';
-            }}
-          />
-        </Col>
-        <Col xs="9">
-          <h1>{elem[0].alcohol_name}</h1>
-          <hr />
-          <Row>
-            <Col md="6">
-              <h5>Typ</h5>
-              <p>{elem[0].alcohol_type}</p>
-              <h5>Moc</h5>
-              <p>{elem[0].alcohol_strength}</p>
+    <Container className="my-5 single ">
+      <Row className="my-4 justify-content-center">
+        <Col md="9 mb-5">
+          <Row className="">
+            <Col>
+              <Link className="btn btn-outline-dark" as={Link} to="/alcohols">
+                Powrót do listy
+              </Link>
             </Col>
-            <Col md="6">
-              <h5>Sensoryka</h5>
-              <span>
-                <strong>Zapach</strong>
-              </span>{' '}
-              <p>{elem[0].alcohol_profile_smell}</p>
-              <span>
-                <strong>Smak</strong>
-              </span>{' '}
-              <p>{elem[0].alcohol_profile_taste}</p>
-              <span>
-                <strong>Finish</strong>
-              </span>{' '}
-              <p>{elem[0].alcohol_profile_finish}</p>
+            <Col className="d-flex justify-content-end">
+              <Button
+                className="btn btn-light btn-outline-danger mx-3"
+                onClick={() => setModalShow(true)}
+              >
+                Edytuj
+              </Button>
+              <Button className="btn btn-danger" onClick={() => deleteElem()}>
+                Usuń
+              </Button>
             </Col>
           </Row>
         </Col>
-        <Col xs="12" className="mt-4">
-          <h2>Powiązane drinki</h2>
+        <Col md="6">
+          <div className="img-wrapper">
+            <img
+              src={elem[0].alcohol_image_url}
+              onError={(e) => {
+                e.target.onError = null;
+                e.target.src = '../320.png';
+              }}
+              className="img-fluid"
+              alt="..."
+            />
+          </div>
+
+          <Col md="8" className="heading-text">
+            <h2 className="fw-bold mt-0">{elem[0].alcohol_name}</h2>
+            <Row className="alcohols">
+              <Col md="6 d-flex align-items-center">
+                <h5>TYP ALKOHOLU:</h5>
+                <span className="lh-base">{elem[0].alcohol_type}</span>
+              </Col>
+              <Col md="6 d-flex align-items-center">
+                <h5>MOC ALKOHOLU:</h5>
+                <span className="lh-base">{elem[0].alcohol_strength}%</span>
+              </Col>
+            </Row>
+          </Col>
+
+          <h4>PROFIL SMAKOWY</h4>
+
+          <h5>{elem[0].alcohol_profile_smell !== '' ? 'ZAPACH' : ''}</h5>
+          <p className="lh-base">{elem[0].alcohol_profile_smell}</p>
+          <h5>{elem[0].alcohol_profile_taste !== '' ? 'SMAK' : ''}</h5>
+          <p className="lh-base">{elem[0].alcohol_profile_taste}</p>
+          <h5>{elem[0].alcohol_profile_finish !== '' ? 'WYKOŃCZENIE / FINISH' : ''}</h5>
+          <p className="lh-base">{elem[0].alcohol_profile_finish}</p>
+        </Col>
+        <Col md="3">
+          <h4 className="mb-3">POWIĄZANE DRINKI</h4>
           <Row>
             {elem.related_drinks.map((el) => (
-              <Col className="p-2" xs="6" md="3" lg="2" key={el.drink_id}>
-                <Link as={Link} to={`/drinks/${el.drink_id}`}>
-                  <Card>
-                    <Card.Img
-                      variant="top"
-                      onError={(e) => {
-                        e.target.onError = null;
-                        e.target.src = '../320.png';
-                      }}
-                      src={el.image_url}
-                    />
-                    <Card.Body>
-                      <Card.Title>{el.name}</Card.Title>
-                    </Card.Body>
-                  </Card>
-                </Link>
+              <Col md="12" className="card-wrapper alcohols" key={el.id}>
+                <div className="card mb-3">
+                  <div className="row g-0">
+                    <div className="col-md-auto">
+                      <Link as={Link} to={`/drinks/${el.id}`}>
+                        <img
+                          src={el.image_url}
+                          onError={(e) => {
+                            e.target.onError = null;
+                            e.target.src = '../320.png';
+                          }}
+                          className="img-fluid rounded-start"
+                          alt="..."
+                        />
+                      </Link>
+                    </div>
+                    <div className="col d-flex align-items-center">
+                      <div className="card-body">
+                        <h5 className="card-title">
+                          <Link as={Link} to={`/drinks/${el.id}`}>
+                            {el.name}
+                          </Link>
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </Col>
             ))}
           </Row>
@@ -131,9 +151,12 @@ function SingleAlcohol() {
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        className="forms"
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Edycja alkoholu</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">
+            <h4 className="m-0">EDYCJA ALKOHOLU</h4>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <AlcoholForm

@@ -135,7 +135,9 @@ export default function AdditionForm({ isProp, additionId, additionName }) {
   return (
     <Form onSubmit={(event) => handleSubmit(event)}>
       <Form.Group className="mb-3">
-        <Form.Label>Nazwa {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Nazwa {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           defaultValue={newAddition.addition_name}
@@ -147,7 +149,9 @@ export default function AdditionForm({ isProp, additionId, additionName }) {
       </Form.Group>
 
       <Form.Group controlId="formFile" className="mb-3">
-        <Form.Label>Zdjęcie {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Zdjęcie {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -162,7 +166,7 @@ export default function AdditionForm({ isProp, additionId, additionName }) {
       {isProp ? (
         <>
           <Col className="d-flex justify-content-end">
-            <Button className="mt-4" variant="primary" type="submit">
+            <Button className="mt-4" variant="danger" type="submit">
               Zatwierdź
             </Button>
           </Col>
@@ -182,7 +186,7 @@ export default function AdditionForm({ isProp, additionId, additionName }) {
             </Modal.Body>
 
             <Modal.Footer>
-              <Button variant="primary" onClick={() => reload()}>
+              <Button variant="danger" onClick={() => reload()}>
                 Powrót
               </Button>
             </Modal.Footer>
@@ -191,7 +195,7 @@ export default function AdditionForm({ isProp, additionId, additionName }) {
       ) : (
         <>
           <Col className="d-flex justify-content-end">
-            <Button className="mt-4" variant="primary" type="submit">
+            <Button className="mt-4" variant="danger" type="submit">
               Dodaj
             </Button>
           </Col>

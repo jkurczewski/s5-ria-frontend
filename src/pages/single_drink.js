@@ -3,6 +3,8 @@ import { Container, ProgressBar, Row, Col, Image, Button, Modal } from 'react-bo
 import axios from 'axios';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import DrinkForm from './forms/drinks-form';
+import './single.css';
+import './lists.css';
 
 const api = axios.create({
   baseURL: `http://localhost:8000/api/drinks/`,
@@ -43,29 +45,45 @@ function SingleDrink() {
       const alcohols = elem.ingredients.alcohols;
 
       return (
-        <div>
-          <h4>Alkohole</h4>
-          <ul>
-            {alcohols.map(function (obj) {
-              return (
-                <li key={obj.id}>
-                  <Link as={Link} to={`/alcohols/'${obj.alcohol_id}`}>
-                    {obj.alcohol_name}
-                  </Link>{' '}
-                  - {obj.alcohol_amount}
-                  {obj.alcohol_unit}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <Row>
+          {alcohols.map(function (obj) {
+            return (
+              <Col md="12" className="card-wrapper alcohols" key={obj.id}>
+                <div className="card mb-3">
+                  <div className="row g-0">
+                    <div className="col-md-auto">
+                      <Link as={Link} to={`/alcohols/${obj.id}`}>
+                        <img
+                          src={obj.alcohol_image_url}
+                          onError={(e) => {
+                            e.target.onError = null;
+                            e.target.src = '../320.png';
+                          }}
+                          className="img-fluid rounded-start"
+                          alt="..."
+                        />
+                      </Link>
+                    </div>
+                    <div className="col d-flex align-items-center">
+                      <div className="card-body">
+                        <h5 className="card-title">
+                          <Link as={Link} to={`/alcohols/${obj.id}`}>
+                            {obj.alcohol_name}
+                          </Link>
+                        </h5>
+                        <h6 className="card-title m-0">
+                          {obj.alcohol_type} - {obj.alcohol_amount} {obj.alcohol_unit}
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Col>
+            );
+          })}
+        </Row>
       );
     }
-    return (
-      <div>
-        <h4>Alkohole</h4>
-      </div>
-    );
   }
 
   function getBeverages() {
@@ -73,22 +91,43 @@ function SingleDrink() {
       const beverages = elem.ingredients.beverages;
 
       return (
-        <div>
-          <h4>Napoje</h4>
-          <ul>
-            {beverages.map(function (obj) {
-              return (
-                <li key={obj.id}>
-                  <Link as={Link} to={`/beverages/'${obj.beverage_id}`}>
-                    {obj.beverage_name}
-                  </Link>{' '}
-                  - {obj.beverage_amount}
-                  {obj.beverage_unit}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <Row>
+          {beverages.map(function (obj) {
+            return (
+              <Col md="12" className="card-wrapper beverages" key={obj.id}>
+                <div className="card mb-3">
+                  <div className="row g-0">
+                    <div className="col-md-auto">
+                      <Link as={Link} to={`/beverages/${obj.id}`}>
+                        <img
+                          src={obj.beverage_image_url}
+                          onError={(e) => {
+                            e.target.onError = null;
+                            e.target.src = '../320.png';
+                          }}
+                          className="img-fluid rounded-start"
+                          alt="..."
+                        />
+                      </Link>
+                    </div>
+                    <div className="col d-flex align-items-center">
+                      <div className="card-body">
+                        <h5 className="card-title">
+                          <Link as={Link} to={`/beverages/${obj.id}`}>
+                            {obj.beverage_name}
+                          </Link>
+                        </h5>
+                        <h6 className="card-title m-0">
+                          {obj.beverage_amount} {obj.beverage_unit}
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Col>
+            );
+          })}
+        </Row>
       );
     }
   }
@@ -98,21 +137,43 @@ function SingleDrink() {
       const additions = elem.ingredients.additions;
 
       return (
-        <div>
-          <h4>Dodatki</h4>
-          <ul>
-            {additions.map(function (obj) {
-              return (
-                <li key={obj.id}>
-                  <Link as={Link} to={`/additions/'${obj.addition_id}`}>
-                    {obj.addition_name}
-                  </Link>{' '}
-                  - {obj.addition_amount} {obj.addition_unit}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <Row>
+          {additions.map(function (obj) {
+            return (
+              <Col md="12" className="card-wrapper beverages" key={obj.id}>
+                <div className="card mb-3">
+                  <div className="row g-0">
+                    <div className="col-md-auto">
+                      <Link as={Link} to={`/additions/${obj.id}`}>
+                        <img
+                          src={obj.addition_image_url}
+                          onError={(e) => {
+                            e.target.onError = null;
+                            e.target.src = '../320.png';
+                          }}
+                          className="img-fluid rounded-start"
+                          alt="..."
+                        />
+                      </Link>
+                    </div>
+                    <div className="col d-flex align-items-center">
+                      <div className="card-body">
+                        <h5 className="card-title">
+                          <Link as={Link} to={`/additions/${obj.id}`}>
+                            {obj.addition_name}
+                          </Link>
+                        </h5>
+                        <h6 className="card-title m-0">
+                          {obj.addition_amount} {obj.addition_unit}
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Col>
+            );
+          })}
+        </Row>
       );
     }
   }
@@ -120,54 +181,59 @@ function SingleDrink() {
   if (!elem)
     return (
       <Container className="my-4">
-        <ProgressBar animated now={100} />
+        <ProgressBar className="bg-danger" animated now={100} />
       </Container>
     );
 
   return (
-    <Container className="my-5">
-      <Row>
-        <Col>
-          <Link className="btn btn-outline-dark" as={Link} to="/drinks">
-            Powrót do listy drinków
-          </Link>
+    <Container className="my-5 single">
+      <Row className="my-4 justify-content-center">
+        <Col md="9 mb-5">
+          <Row className="">
+            <Col>
+              <Link className="btn btn-outline-dark" as={Link} to="/drinks">
+                Powrót do listy
+              </Link>
+            </Col>
+            <Col className="d-flex justify-content-end">
+              <Button
+                className="btn btn-light btn-outline-danger mx-3"
+                onClick={() => setModalShow(true)}
+              >
+                Edytuj
+              </Button>
+              <Button className="btn btn-danger" onClick={() => deleteElem()}>
+                Usuń
+              </Button>
+            </Col>
+          </Row>
         </Col>
-        <Col className="d-flex justify-content-end">
-          <Button className="btn btn-Info mx-3" onClick={() => setModalShow(true)}>
-            Edytuj
-          </Button>
-          <Button className="btn btn-danger" onClick={() => deleteElem()}>
-            Usuń
-          </Button>
-        </Col>
-      </Row>
-      <Row className="my-4">
-        <Col xs="3">
-          <Image
-            src={elem[0].image_url}
-            fluid="true"
-            onError={(e) => {
-              e.target.onError = null;
-              e.target.src = '../320.png';
-            }}
-          />
-        </Col>
+        <Col md="6">
+          <div className="img-wrapper">
+            <img
+              src={elem[0].image_url}
+              onError={(e) => {
+                e.target.onError = null;
+                e.target.src = '../320.png';
+              }}
+              className="img-fluid"
+              alt="..."
+            />
+          </div>
 
-        <Col xs="9">
-          <h1>{elem[0].name}</h1>
-          <p>{elem[0].description}</p>
+          <Col md="8" className="heading-text">
+            <h2 className="fw-bold mt-0">{elem[0].name}</h2>
+          </Col>
+          <h4>Opis</h4>
+          <p className="lh-base">{elem[0].description}</p>
+          <h4>Przepis</h4>
+          <p className="lh-base">{elem[0].recipe}</p>
         </Col>
-      </Row>
-      <Row className="d-flex justify-content-center my-5">
-        <Col xs="4">
-          <h2>Składniki</h2>
+        <Col md="3">
+          <h4 className="mb-3">SKŁADNIKI</h4>
           {getAlcohols(elem)}
           {getBeverages(elem)}
           {getAdditions(elem)}
-        </Col>
-        <Col xs="8">
-          <h2>Przepis</h2>
-          <p>{elem[0].recipe}</p>
         </Col>
       </Row>
       <Modal
@@ -176,9 +242,12 @@ function SingleDrink() {
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        className="forms"
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Edycja drinka</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">
+            <h4 className="m-0">EDYCJA DRINKA</h4>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <DrinkForm

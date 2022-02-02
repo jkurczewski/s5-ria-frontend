@@ -170,7 +170,9 @@ export default function DrinksForm({
   return (
     <Form onSubmit={(event) => handleSubmit(event)}>
       <Form.Group className="mb-3">
-        <Form.Label>Nazwa {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Nazwa {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -183,7 +185,7 @@ export default function DrinksForm({
       <Row>
         <Col md="6" className="mb-3">
           <Form.Group>
-            <Form.Label>
+            <Form.Label className="mb-0 fw-bold">
               Typ alkoholu {isProp ? '' : <span className="text-danger">*</span>}
             </Form.Label>
             <Form.Select
@@ -229,7 +231,7 @@ export default function DrinksForm({
           </Form.Group>
         </Col>
         <Col md="6">
-          <Form.Label>
+          <Form.Label className="mb-0 fw-bold">
             Moc alkoholu {isProp ? '' : <span className="text-danger">*</span>}
           </Form.Label>
           <InputGroup className="mb-3">
@@ -249,7 +251,9 @@ export default function DrinksForm({
         </Col>
       </Row>
       <Form.Group controlId="formFile" className="mb-3">
-        <Form.Label>Zdjęcie {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Zdjęcie {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -263,11 +267,13 @@ export default function DrinksForm({
 
       <Row>
         <Col md="12">
-          <h5>Sensoryka</h5>
+          <h4>Sensoryka</h4>
         </Col>
         <Col md="4">
           <Form.Group className="mb-3">
-            <Form.Label>Zapach {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+            <Form.Label className="mb-0 fw-bold">
+              Zapach {isProp ? '' : <span className="text-danger">*</span>}
+            </Form.Label>
             <Form.Control
               onChange={(e) => handleInput(e)}
               required={!isProp}
@@ -283,7 +289,9 @@ export default function DrinksForm({
         </Col>
         <Col md="4">
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-            <Form.Label>Smak {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+            <Form.Label className="mb-0 fw-bold">
+              Smak {isProp ? '' : <span className="text-danger">*</span>}
+            </Form.Label>
             <Form.Control
               onChange={(e) => handleInput(e)}
               required={!isProp}
@@ -299,7 +307,7 @@ export default function DrinksForm({
         </Col>
         <Col md="4">
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-            <Form.Label>
+            <Form.Label className="mb-0 fw-bold">
               Wykończenie (finish) {isProp ? '' : <span className="text-danger">*</span>}
             </Form.Label>
             <Form.Control
@@ -320,7 +328,7 @@ export default function DrinksForm({
       {isProp ? (
         <>
           <Col className="d-flex justify-content-end">
-            <Button className="mt-4" variant="primary" type="submit">
+            <Button className="mt-4" variant="danger" type="submit">
               Zatwierdź
             </Button>
           </Col>
@@ -340,7 +348,7 @@ export default function DrinksForm({
             </Modal.Body>
 
             <Modal.Footer>
-              <Button variant="primary" onClick={() => reload()}>
+              <Button variant="danger" onClick={() => reload()}>
                 Powrót
               </Button>
             </Modal.Footer>
@@ -349,7 +357,7 @@ export default function DrinksForm({
       ) : (
         <>
           <Col className="d-flex justify-content-end">
-            <Button className="mt-4" variant="primary" type="submit">
+            <Button className="mt-4" variant="danger" type="submit">
               Dodaj
             </Button>
           </Col>

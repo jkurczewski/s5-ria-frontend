@@ -1,26 +1,48 @@
-import React from 'react';
-import { Navbar, Container, Nav, Button, Col} from 'react-bootstrap';
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Navbar, Container, Nav, Button, Col, Row } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import './navigation.css';
 
-function Navigation() {
-    return(
-        <Navbar bg="dark" variant="dark">
-            <Container>
-                <Navbar.Brand to="/"><h1 className='lead m-0'><strong>DRINKS</strong></h1></Navbar.Brand>
-                <Nav className="d-flex w-100 justify-content-between">
-                    <Nav.Link as={Link} to="/">Strona główna</Nav.Link>
-                    <Nav.Link as={Link} to="/drinks">Drinki</Nav.Link>
-                    <Nav.Link as={Link} to="/alcohols">Alkohole</Nav.Link>
-                    <Nav.Link as={Link} to="/beverages">Napoje</Nav.Link>
-                    <Nav.Link as={Link} to="/additions">Dodatki</Nav.Link>
-                    <Col className="d-flex justify-content-end">
-                        <Button className="d-flex justify-content-end" variant="outline-light"><Link as={Link} to="/add">Dodaj nowy...</Link></Button>
-                    </Col>   
-                </Nav>
+export default function Navigation(props) {
+  const [active, setActive] = useState('default');
 
-            </Container>
-        </Navbar>
-    );
-};
-
-export default Navigation;
+  return (
+    <Navbar className="navigation_wrapper sticky-top">
+      <Container className="navigation">
+        <Col className="col-md-auto">
+          <Navbar.Brand className="m-0" as={Link} to="/">
+            <h1 className="lead m-0">
+              <strong className="fw-bold">DRINKS</strong>
+              <strong className="">LIST</strong>
+            </h1>
+          </Navbar.Brand>
+        </Col>
+        <Col>
+          <Nav
+            activeKey={active}
+            onSelect={(selectedKey) => setActive(selectedKey)}
+            className="d-flex w-100 justify-content-center fw-bold "
+          >
+            <Nav.Link eventKey="drinks" as={Link} to="/drinks">
+              <span>DRINKI</span>
+            </Nav.Link>
+            <Nav.Link eventKey="alcohols" as={Link} to="/alcohols">
+              <span>ALKOHOLE</span>
+            </Nav.Link>
+            <Nav.Link eventKey="beverages" as={Link} to="/beverages">
+              <span>NAPOJE</span>
+            </Nav.Link>
+            <Nav.Link eventKey="additions" as={Link} to="/additions">
+              <span>DODATKI</span>
+            </Nav.Link>
+          </Nav>
+        </Col>
+        <Nav.Link className="col-md-auto fw-bold " eventKey="add" as={Link} to="/add">
+          <span>
+            <u>DODAJ NOWE</u>
+          </span>
+        </Nav.Link>
+      </Container>
+    </Navbar>
+  );
+}

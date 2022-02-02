@@ -37,3 +37,7 @@
     transform: rotate(360deg);
   }
 }
+
+.progress-bar {
+  background-color: #ba181b !important;
+}

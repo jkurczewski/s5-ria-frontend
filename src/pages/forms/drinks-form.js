@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Col, Table, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { FaTrash, FaPlusCircle } from 'react-icons/fa';
+import '../forms.css';
 
 const api = axios.create({
   baseURL: `http://localhost:8000/api/`,
@@ -103,6 +105,7 @@ export default function AdditionForm({
       alcoholsList.push({
         value: ingredients.alcohols[key].id,
         label: ingredients.alcohols[key].alcohol_name,
+        type: ingredients.alcohols[key].alcohol_type,
       }),
     );
 
@@ -256,16 +259,8 @@ export default function AdditionForm({
       errors.recipe = 'Opis jest wymagany';
     }
 
-    if (beverages.length < 1) {
-      errors.beverages = 'Napoje są wymagane';
-    }
-
     if (hasDefaultValue(beverages)) {
       errors.beverages = 'Wszystkie wartości muszą zostać uzupełnione';
-    }
-
-    if (additions.length < 1) {
-      errors.additions = 'Dodatki są wymagane';
     }
 
     if (hasDefaultValue(additions)) {
@@ -345,14 +340,16 @@ export default function AdditionForm({
       }
       if (isProp) {
         let url = `drinks/${newDrink.id}?name=${newDrink.name}&description=${newDrink.description}&recipe=${newDrink.recipe}`;
-        url = url.concat(`&beverages=${beveragesUrl}`);
-        url = url.concat(`&additions=${additionsUrl}`);
 
+        if (beveragesUrl) {
+          url = url.concat(`&beverages=${beveragesUrl}`);
+        }
+        if (additionsUrl) {
+          url = url.concat(`&additions=${additionsUrl}`);
+        }
         if (alcoholsUrl) {
           url = url.concat(`&alcohols=${alcoholsUrl}`);
         }
-
-        console.log(url);
 
         api
           .patch(url, formData, {
@@ -367,9 +364,12 @@ export default function AdditionForm({
           .catch((err) => console.log(err));
       } else {
         let url = `drinks?name=${newDrink.name}&description=${newDrink.description}&recipe=${newDrink.recipe}`;
-        url = url.concat(`&beverages=${beveragesUrl}`);
-        url = url.concat(`&additions=${additionsUrl}`);
-
+        if (beveragesUrl) {
+          url = url.concat(`&beverages=${beveragesUrl}`);
+        }
+        if (additionsUrl) {
+          url = url.concat(`&additions=${additionsUrl}`);
+        }
         if (alcoholsUrl) {
           url = url.concat(`&alcohols=${alcoholsUrl}`);
         }
@@ -390,12 +390,12 @@ export default function AdditionForm({
     }
   };
 
-  console.log(alcohols);
-
   return (
     <Form onSubmit={(event) => handleSubmit(event)}>
       <Form.Group className="mb-3">
-        <Form.Label>Nazwa {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Nazwa {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -407,7 +407,9 @@ export default function AdditionForm({
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Label>Opis {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Opis {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -420,7 +422,9 @@ export default function AdditionForm({
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Label>Przepis {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Przepis {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -433,7 +437,9 @@ export default function AdditionForm({
       </Form.Group>
 
       <Form.Group controlId="formFile" className="mb-3">
-        <Form.Label>Zdjęcie {isProp ? '' : <span className="text-danger">*</span>}</Form.Label>
+        <Form.Label className="mb-0 fw-bold">
+          Zdjęcie {isProp ? '' : <span className="text-danger">*</span>}
+        </Form.Label>
         <Form.Control
           onChange={(e) => handleInput(e)}
           required={!isProp}
@@ -443,10 +449,9 @@ export default function AdditionForm({
         {formerrors.image_url && <p className="text-danger">{formerrors.image_url}</p>}
       </Form.Group>
 
-      <hr />
       <h4>Składniki: </h4>
       <h5 className="mt-4">Alkohole:</h5>
-      <Table striped bordered hover>
+      <Table className="mb-2">
         <thead>
           <tr>
             <th>Nazwa alkoholu</th>
@@ -472,7 +477,7 @@ export default function AdditionForm({
                     </option>
                     {alcoholsList.map((e) => (
                       <option key={e.value} value={e.value}>
-                        {e.label}
+                        {e.type} - {e.label}
                       </option>
                     ))}
                   </Form.Select>
@@ -506,22 +511,25 @@ export default function AdditionForm({
                   </Form.Select>
                 </Form.Group>
               </td>
-              <td>
-                <Button variant="secondary" size="sm" onClick={() => removeElem(index, 'alcohol')}>
-                  Usuń
-                </Button>
+              <td className="icon-wrapper">
+                <button type="button" onClick={() => removeElem(index, 'alcohol')}>
+                  <FaTrash />
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
       {formerrors.alcohols && <p className="text-danger">{formerrors.alcohols}</p>}
-      <Button variant="secondary" size="sm" onClick={() => addElem('alcohol')}>
-        Dodaj nowy alkohol
-      </Button>
+      <Col className="d-flex add-button">
+        <Button size="sm" onClick={() => addElem('alcohol')}>
+          <FaPlusCircle />
+          Dodaj nowy alkohol
+        </Button>
+      </Col>
 
       <h5 className="mt-4">Napoje:</h5>
-      <Table striped bordered hover>
+      <Table>
         <thead>
           <tr>
             <th>Nazwa napoju</th>
@@ -583,22 +591,25 @@ export default function AdditionForm({
                   </Form.Select>
                 </Form.Group>
               </td>
-              <td>
-                <Button variant="secondary" size="sm" onClick={() => removeElem(index, 'beverage')}>
-                  Usuń
-                </Button>
+              <td className="icon-wrapper">
+                <button type="button" onClick={() => removeElem(index, 'beverage')}>
+                  <FaTrash />
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
       {formerrors.beverages && <p className="text-danger">{formerrors.beverages}</p>}
-      <Button variant="secondary" size="sm" onClick={() => addElem('beverage')}>
-        Dodaj nowy napój
-      </Button>
+      <Col className="d-flex add-button">
+        <Button size="sm" onClick={() => addElem('beverage')}>
+          <FaPlusCircle />
+          Dodaj nowy napój
+        </Button>
+      </Col>
 
       <h5 className="mt-4">Dodatki:</h5>
-      <Table striped bordered hover>
+      <Table>
         <thead>
           <tr>
             <th>Nazwa dodatku</th>
@@ -650,32 +661,35 @@ export default function AdditionForm({
                   <Form.Select
                     onChange={(e) => handleElemChange(index, e, 'addition')}
                     name="addition_unit"
-                    defaultValue={isProp ? element.addition_unit : 'piece'}
+                    defaultValue={isProp ? element.addition_unit : 'Sztuka/i'}
                   >
-                    <option key="piece" value="piece">
+                    <option key="Sztuka/i" value="Sztuka/i">
                       Sztuka/i
                     </option>
                   </Form.Select>
                 </Form.Group>
               </td>
-              <td>
-                <Button variant="secondary" size="sm" onClick={() => removeElem(index, 'addition')}>
-                  Usuń
-                </Button>
+              <td className="icon-wrapper">
+                <button type="button" onClick={() => removeElem(index, 'addition')}>
+                  <FaTrash />
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
       {formerrors.additions && <p className="text-danger">{formerrors.additions}</p>}
-      <Button variant="secondary" size="sm" onClick={() => addElem('addition')}>
-        Dodaj nowy dodatek
-      </Button>
+      <Col className="d-flex add-button">
+        <Button size="sm" onClick={() => addElem('addition')}>
+          <FaPlusCircle />
+          Dodaj nowy dodatek
+        </Button>
+      </Col>
 
       {isProp ? (
         <>
           <Col className="d-flex justify-content-end">
-            <Button className="mt-4" variant="primary" type="submit">
+            <Button className="mt-4" variant="danger" type="submit">
               Zatwierdź
             </Button>
           </Col>
@@ -695,7 +709,7 @@ export default function AdditionForm({
             </Modal.Body>
 
             <Modal.Footer>
-              <Button variant="primary" onClick={() => reload()}>
+              <Button variant="danger" onClick={() => reload()}>
                 Powrót
               </Button>
             </Modal.Footer>
@@ -704,7 +718,7 @@ export default function AdditionForm({
       ) : (
         <>
           <Col className="d-flex justify-content-end">
-            <Button className="mt-4" variant="primary" type="submit">
+            <Button className="mt-4" variant="danger" type="submit">
               Dodaj
             </Button>
           </Col>

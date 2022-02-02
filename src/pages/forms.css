@@ -1,0 +1,81 @@
+.forms h2 {
+  font-size: 64px;
+  color: #ba181b;
+}
+
+.forms h4 {
+  font-size: 34px;
+  color: #ba181b;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 48px;
+}
+
+.forms h5 {
+  font-size: 18px;
+  color: #ba181b;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 48px;
+}
+
+.forms .form-label {
+  font-size: 0.9rem !important;
+  color: #ba181b;
+  text-transform: uppercase;
+}
+
+.forms thead {
+  font-size: 0.9rem !important;
+  text-transform: uppercase;
+  color: #616161;
+}
+
+.table > :not(:first-child) {
+  border-top: 0 !important;
+}
+
+.forms th {
+  font-weight: 400;
+}
+
+.forms tr {
+  border-bottom: 1px solid #e9e9e9 !important;
+}
+
+.forms .icon-wrapper button {
+  background-color: white;
+  border: white;
+}
+.forms svg {
+  color: #ba181b;
+}
+
+.forms .icon-wrapper {
+  display: flex;
+  align-items: center;
+  height: 54px;
+  border-bottom-width: 0px;
+}
+.forms .icon-wrapper button {
+  display: flex;
+}
+
+.forms .icon-wrapper button:hover svg {
+  color: #d12326;
+}
+
+.forms .add-button button {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  background-color: #ba181b;
+  border-color: #ba181b;
+  display: flex;
+  align-items: center;
+}
+
+.forms .add-button button svg {
+  color: white;
+  margin-right: 8px;
+}

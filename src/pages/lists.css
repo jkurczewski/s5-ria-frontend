@@ -1,11 +1,97 @@
-.results h3{
-    text-align: left;
+.results h3 {
+  text-align: left;
 }
 
-.search_bar-ingredient{
-    display: block;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    line-height: 8px;
+.search_bar-ingredient {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  line-height: 8px;
+}
+
+.img-heading {
+  max-height: 550px;
+  object-position: center;
+  object-fit: cover;
+}
+.heading-text h2 {
+  font-size: 64px;
+  color: #ba181b;
+}
+
+.heading-text {
+  padding: 24px 48px !important;
+  top: -48px;
+  position: relative;
+  background-color: white;
+  font-size: 18px;
+}
+
+.filters {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 80px !important;
+  height: 400px;
+}
+
+.filters .form-label {
+  font-size: 0.9rem !important;
+  color: #ba181b;
+}
+
+.card-wrapper .card {
+  border: none;
+  border-radius: 0 !important;
+}
+
+.card-wrapper img {
+  padding: 1rem;
+  height: 164px;
+  width: 164px;
+  object-position: center;
+  object-fit: cover;
+  border-radius: 0 !important;
+}
+
+.beverages img {
+  height: 92px;
+  width: 92px;
+  padding: 0.35rem;
+}
+
+.card-wrapper hr {
+  height: 2px;
+  background-color: #c0c0c0;
+}
+
+.card-wrapper h5 {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.card-wrapper a {
+  text-decoration: none;
+  color: #ba181b;
+}
+
+.card-wrapper p {
+  font-weight: 400;
+  line-height: 26px;
+}
+.card-wrapper small {
+  background-color: #ba181b20;
+  padding: 5px 12px;
+  border-radius: 24px;
+  color: #ba181b;
+}
+
+.alcohols small {
+  text-transform: capitalize;
+}
+
+.alcohols img {
+  height: 92px;
+  width: 92px;
+  padding: 0.35rem;
 }

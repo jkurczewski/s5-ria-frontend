@@ -4,6 +4,7 @@ import DrinksForm from './forms/drinks-form';
 import AlcoholsForm from './forms/alcohol-form';
 import BeveragesForm from './forms/beverage-form';
 import AdditionsForm from './forms/addition-form';
+import './forms.css';
 
 export default function AddElement() {
   const [state, setState] = useState('drinks');
@@ -35,17 +36,17 @@ export default function AddElement() {
   }, [state]);
 
   return (
-    <Container className="mt-5">
+    <Container className="mt-5 forms">
       <Row className="d-flex flex-row justify-content-center">
         <Col md="8">
-          <h1>Dodaj do bazy danych</h1>
+          <h2 className="fw-bold">DODAJ NOWE</h2>
         </Col>
         <Col md="8" className="mb-2">
           <form onSubmit={(e) => e.preventDefault()} onChange={(e) => setState(e.target.value)}>
             <Row className="mt-3 mb-3">
               <Col className="">
                 <Form.Group className="d-flex flex-column w-100">
-                  <Form.Label>Wybierz typ dodawanego elementu:</Form.Label>
+                  <Form.Label className="mb-0 fw-bold">Wybierz typ dodawanego elementu:</Form.Label>
                   <Form.Select name="adding_type">
                     <option key="drinks" value="drinks">
                       Drink
